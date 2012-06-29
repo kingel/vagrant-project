@@ -1,5 +1,5 @@
 Vagrant::Config.run do |config|
-    config.vm.box = "maverick64"
+    config.vm.box = "precise64"
     config.vm.box_url = "http://files.vagrantup.com/precise64.box"
     config.ssh.max_tries = 50
     config.ssh.timeout   = 300

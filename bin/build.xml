@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="Build-Culgi" default="help" basedir="../">
+<project name="Build-Project" default="help" basedir="../">
 
     <!--
-        Culgi Build file.
-        This file contains all build workflow steps necessary to create a CI setup for the Culgi project.
+        Project Build file.
+        This file contains all build workflow steps necessary to create a development setup for the Project project.
     -->
+    <tstamp />
 
     <!-- set the operating system properties -->
     <condition property="build.os" value="mac">
@@ -63,19 +64,15 @@
 
     <!--
         Build target.
-        Runs through complete workflow to create a releasable product.
+        Runs through complete workflow to create a compiled product.
     -->
-    <target name="build" description="Build project." depends="prepare,configure,make,test,tools-parallel" />
+    <target name="build" description="Build Project." depends="prepare,configure,make,make-install,package" />
 
-    <target name="tools-parallel" description="Run tools in parallel">
-        <parallel threadCount="${cmake.cores}">
-            <antcall target="doxygen"/>
-            <sequential>
-                <antcall target="make-install"/>
-                <antcall target="package"/>
-            </sequential>
-        </parallel>
-    </target>
+    <!--
+        Release target.
+        Runs through complete workflow to create a released product.
+    -->
+    <target name="release" description="Build Project." depends="build,publish" />
 
     <!--
         Prepare target.
@@ -95,75 +92,36 @@
         <echo message="os version   : ${os.version}" />
         <echo message="build system : ${cmake.generator}" />
         <echo message="build type   : ${cmake.build.type}" />
+        <echo message="branch       : ${branch.name}" />
         <echo message="build dir    : ${dir.build}" />
         <echo message="data dir     : ${dir.data}" />
-    	<echo message="doc dir      : ${dir.doc}" />
+        <echo message="doc dir      : ${dir.doc}" />
         <echo message="log dir      : ${dir.log}" />
+        <echo message="package dir  : ${dir.package}" />
         <echo message="scripts dir  : ${dir.scripts}" />
         <echo message="src dir      : ${dir.src}" />
     </target>
 
     <target name="clean">
 
-        <!-- Flush build directories -->
-        <delete dir="${dir.build}/${build.os}/dev"/>
+        <!-- Flush build and package directories -->
+        <delete dir="${dir.build}/${build.os}/${branch.name}"/>
+        <delete dir="${dir.package}/${build.os}/${branch.name}"/>
 
-        <!-- Create build directories -->
-        <mkdir dir="${dir.build}/${build.os}/dev"/>
-
-        <!-- Flush build directories -->
-        <delete dir="${dir.tmp}/build/${os.name}"/>
-
-        <!-- Create build directories -->
-        <mkdir dir="${dir.tmp}/build/${os.name}"/>
-        <mkdir dir="${dir.tmp}/build/${os.name}/api"/>
-        <mkdir dir="${dir.tmp}/build/${os.name}/logs"/>
-        <mkdir dir="${dir.tmp}/build/${os.name}/install"/>
-        <mkdir dir="${dir.tmp}/build/${os.name}/release"/>
+        <!-- Create build and package directories -->
+        <mkdir dir="${dir.build}/${build.os}/${branch.name}"/>
+        <mkdir dir="${dir.package}/${build.os}/${branch.name}"/>
     </target>
 
     <target name="bootstrap" depends="bootstrap-unixmake,bootstrap-vs,bootstrap-xcode">
 
         <!-- Copy cmake cache file -->
-        <copy file="${cmake.cache.file}" todir="${dir.build}/${build.os}/dev" />
+        <copy file="${cmake.cache.file}" todir="${dir.build}/${build.os}/${branch.name}" />
     </target>
 
     <target name="bootstrap-unixmake" if="use.unix-make" />
 
-    <target name="bootstrap-vs" if="use.vs">
-
-        <!-- Create build directories -->
-        <mkdir dir="${dir.data}/dll"/>
-        <mkdir dir="${dir.data}/dll/${cmake.build.type}"/>
-
-        <!-- harvest dll files -->
-        <copy toDir="${dir.data}/dll/${cmake.build.type}">
-            <fileset dir="${dir.dll.cmin}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.fftw}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.glew}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.qt}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.qwt}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.rlm}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.ssl}">
-                <include name="**/*.dll" />
-            </fileset>
-            <fileset dir="${dir.dll.vtk}">
-                <include name="**/*.dll" />
-            </fileset>
-        </copy>
-    </target>
+    <target name="bootstrap-vs" if="use.vs" />
 
     <target name="bootstrap-xcode" if="use.xcode" />
 
@@ -174,9 +132,9 @@
     <target name="configure" description="Configure Culgi using cmake.">
 
         <!-- configure project -->
-        <exec dir="${dir.build}/${build.os}/dev" executable="${cmake.bin}" failonerror="true">
+        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="${cmake.bin}" failonerror="true">
             <arg value="-G${cmake.generator}"/>
-            <arg value="${dir.src}"/>
+            <arg value="${dir.src}/${branch.name}"/>
         </exec>
     </target>
 
@@ -189,7 +147,7 @@
     <target name="make-unixmake" if="use.unix-make">
 
         <!-- build project -->
-        <exec dir="${dir.build}/${build.os}/dev" executable="make" failonerror="true">
+        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="make" failonerror="true">
             <arg value="-i"/>
             <arg value="-j${cmake.cores}"/>
         </exec>
@@ -213,14 +171,14 @@
 
     <!--
         Test target.
-        Run test suite for Attgenie.
+        Run test suite for Culgi.
     -->
-    <target name="test" description="Testing of Attgenie." depends="test-unixmake,test-vs,test-xcode" />
+    <target name="test" description="Testing of Culgi." depends="test-unixmake,test-vs,test-xcode" />
 
     <target name="test-unixmake" if="use.unix-make">
 
         <!-- test project -->
-        <exec dir="${dir.build}/${build.os}/dev" executable="make" failonerror="true">
+        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="make" failonerror="true">
             <arg value="test"/>
         </exec>
     </target>
@@ -273,9 +231,9 @@
 
     <!--
         Make install target.
-        Install Culgi from compiled code.
+        Install Project from compiled code.
     -->
-    <target name="make-install" description="Install of Culgi." depends="make-install-unixmake,make-install-vs,make-install-xcode" />
+    <target name="make-install" description="Install of Project." depends="make-install-unixmake,make-install-vs,make-install-xcode" />
 
     <target name="make-install-unixmake" if="use.unix-make">
 
@@ -303,7 +261,7 @@
 
     <!--
         Package target.
-        Create platform specific installer for Culgi from compiled code.
+        Create platform specific installer for Project from compiled code.
     -->
     <target name="package" description="Install of Attgenie." depends="package-unixmake,package-vs,package-xcode" />
 
@@ -331,9 +289,15 @@
         </antcall>
     </target>
 
+    <!--
+        Publish target.
+        Publish platform specific installer for Culgi from compiled code.
+    -->
+    <target name="publish" description="Publish Culgi." />
+
     <target name="run-vs" if="use.vs">
 
-        <exec dir="${dir.build}/${build.os}/dev" executable="${dir.scripts}/run-vs.bat" failonerror="true">
+        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="${dir.scripts}/run-vs.bat" failonerror="true">
             <arg value="${vs.bin}"/>
             <arg value="${cmake.project.name}"/>
             <arg value="${cmake.build.type}"/>
@@ -343,7 +307,7 @@
 
     <target name="run-xcode" if="use.xcode">
 
-        <exec dir="${dir.build}/${build.os}/dev" executable="${dir.scripts}/run-xcode.sh" failonerror="true">
+        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="${dir.scripts}/run-xcode.sh" failonerror="true">
             <arg value="${cmake.build.type}"/>
             <arg value="${target}"/>
             <arg value="${cmake.cores}"/>
