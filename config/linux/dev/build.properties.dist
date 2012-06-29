@@ -1,0 +1,12 @@
+cmake.bin=/usr/bin/cmake
+cmake.build.type=Debug
+cmake.cache.file=${basedir}/config/linux/CMakeCache.txt
+cmake.cores=4
+cmake.generator=Unix Makefiles
+cmake.project.name=QtCmakeCxxTestDoxygen
+dir.bin=${basedir}/bin
+dir.doc=${basedir}/doc
+dir.src=${basedir}/src
+dir.tmp=${basedir}/tmp
+log.file=linux.build.log
+log.level=info
