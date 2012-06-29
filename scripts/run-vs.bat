@@ -1,1 +1,0 @@
-%1 %2.sln /Build %3 /Project %4
