@@ -18,7 +18,7 @@
   }
 
   case $::operatingsystem {
-    default: { $gem_packages = ['librarian-puppet','puppet-qatools'] }
+    default: { $gem_packages = ['fpm'] }
   }
 
   package { $gem_packages:
