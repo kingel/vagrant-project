@@ -9,24 +9,9 @@
   }
 
   case $::operatingsystem {
-    default: { $default_packages = ['subversion','git','tree','zip','unzip', 'ruby','rubygems','curl','wget','rpm'] }
+    default: { $default_packages = ['subversion','git','tree','zip','unzip','ant','ant-contrib','curl','wget'] }
   }
 
-  package { $default_packages:
-    ensure  => latest,
-    require => Exec['apt_update'],
-  }
-
-  case $::operatingsystem {
-    default: { $gem_packages = ['fpm'] }
-  }
-
-  package { $gem_packages:
-    ensure   => latest,
-    provider => gem,
-  }
-  
-  $default_packages = ['subversion','tree','zip','unzip','ant','ant-contrib','python-setuptools','ruby','rubygems','curl','wget']
   package { $default_packages:
     ensure  => latest,
     require => Exec['apt_update'],
