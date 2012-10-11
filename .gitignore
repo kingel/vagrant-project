@@ -1,3 +1,6 @@
-
-/config/windows/dev/CMakeCache.txt
-/config/windows/dev/build.properties
+.project
+/modules
+/.vagrant
+/.tmp
+/Puppetfile.lock
+/.librarian

@@ -1,16 +1,13 @@
-# Activate properties files#
-copy all *.ext.dist files to *.ext files int he config/${os}/dev folders
-'cd bin'
-'ant build'
+# Setting up your project workspace #
 
-# Create and run a virtual machine #
+## Creating a disposable environment ##
+### Requirements ###
+    Virtualbox       => https://www.virtualbox.org
+    Vagrant          => http://www.vagrantup.com
+    librarian-puppet => gem install librarian-puppet
 
-## Requirements ##
-Virtualbox => 4.1.x
-Vagrant    => 1.0.3
-Active internet connection, if not present a precise64 base box will be downloaded and installed.
-
-## Start a Box ##
-vagrant up
-vagrant provision (only when vagrant up end with an error or when changes to the puppet files are made)
-vagrant ssh
+### Setup ###
+    librarian-puppet install
+    vagrant up
+    vagrant provision
+    vagrant ssh
