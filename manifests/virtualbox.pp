@@ -9,7 +9,7 @@
   }
 
   case $::operatingsystem {
-    default: { $default_packages = ['subversion','git','tree','zip','unzip', 'ruby','rubygems','curl','wget'] }
+    default: { $default_packages = ['subversion','git','tree','zip','unzip', 'ruby','rubygems','curl','wget','rpm'] }
   }
 
   package { $default_packages:
