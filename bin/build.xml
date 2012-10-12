@@ -100,7 +100,7 @@
     	<echo message="doc dir      : ${dir.doc}" />
         <echo message="log dir      : ${dir.log}" />
         <echo message="scripts dir  : ${dir.scripts}" />
-        <echo message="src dir      : ${dir.src}" />
+        <echo message="workspace dir      : ${dir.workspace}" />
     </target>
 
     <target name="clean">
@@ -176,7 +176,7 @@
         <!-- configure project -->
         <exec dir="${dir.build}/${build.os}/dev" executable="${cmake.bin}" failonerror="true">
             <arg value="-G${cmake.generator}"/>
-            <arg value="${dir.src}"/>
+            <arg value="${dir.workspace}"/>
         </exec>
     </target>
 
