@@ -11,3 +11,6 @@ vagrant provision
 
 ## Checkout Code ##
 Code should be checkout into the src folder.
+
+## Connecting to your vm ##
+    sshd        => localhost:2222
