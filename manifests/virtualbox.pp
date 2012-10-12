@@ -17,19 +17,11 @@
     require => Exec['apt_update'],
   }
 
-  class {'apache': }
-  apache::mod { 'headers': }
-  apache::mod { 'expires': }
-  apache::mod { 'rewrite': }
-  apache::mod { 'php5': }
-
- $php5_packagelist = ['php5-cli', 'php5-dev', 'php-pear', 'php5-curl', 'php5-mysql', 'php5-sqlite', 'php5-xdebug',]
-  package { $php5_packagelist:
-    ensure  => latest,
-    require => Exec['apt_update'],
+  case $::operatingsystem {
+    default: { $gem_packages = ['bundler'] }
   }
 
-  class { 'mysql': }
-  class { 'mysql::server':
-    config_hash => { 'root_password' => 'vagrant' }
+  package { $gem_packages:
+    ensure   => latest,
+    provider => gem,
   }

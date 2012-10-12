@@ -13,5 +13,4 @@
     vagrant ssh
 
 ## Connecting to your vm ##
-    httpd       => localhost:8081
     sshd        => localhost:2222
