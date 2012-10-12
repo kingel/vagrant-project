@@ -11,3 +11,6 @@
     vagrant up
     vagrant provision
     vagrant ssh
+
+## Connecting to your vm ##
+    sshd        => localhost:2222
