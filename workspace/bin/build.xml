@@ -131,6 +131,7 @@
         <!-- configure project -->
         <exec dir="${dir.build}/${build.os}/${branch.name}" executable="${cmake.bin}" failonerror="true">
             <arg value="-G${cmake.generator}"/>
+        	<arg value="-DCMAKE_BUILD_TYPE:STRING=${cmake.build.type}"/>
             <arg value="${dir.src}/${branch.name}"/>
         </exec>
     </target>
