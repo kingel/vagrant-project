@@ -66,13 +66,13 @@
         Build target.
         Runs through complete workflow to create a compiled product.
     -->
-    <target name="build" description="Build Culgi." depends="prepare,configure,make,package,release" />
+    <target name="build" description="Build Culgi." depends="prepare,configure,make,package" />
 
     <!--
         Rebuild target.
         Runs through complete workflow to create a compiled product.
     -->
-    <target name="rebuild" description="Rebuild Culgi." depends="make,package,release" />
+    <target name="rebuild" description="Rebuild Culgi." depends="make,package" />
     
     <!--
         Prepare target.
@@ -193,36 +193,6 @@
         <!-- install project -->
         <antcall target="run-xcode">
             <param name="target" value="package"/>
-        </antcall>
-    </target>
-
-    <!--
-        release target.
-        Create platform specific installer for Culgi from compiled code including relevant manuals.
-    -->
-    <target name="release" description="Release Culgi." depends="release-unixmake,release-vs,release-xcode" />
-
-    <target name="release-unixmake" if="use.unix-make">
-
-        <!-- install project -->
-        <exec dir="${dir.build}/${build.os}/${branch.name}" executable="make" failonerror="true">
-            <arg value="RELEASE"/>
-        </exec>
-    </target>
-
-    <target name="release-vs" if="use.vs">
-
-        <!-- install project -->
-        <antcall target="run-vs">
-            <param name="target" value="RELEASE"/>
-        </antcall>
-    </target>
-
-    <target name="release-xcode" if="use.xcode" >
-
-        <!-- install project -->
-        <antcall target="run-xcode">
-            <param name="target" value="RELEASE"/>
         </antcall>
     </target>
 
