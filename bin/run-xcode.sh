@@ -1,0 +1,1 @@
+xcodebuild -configuration $1 -target $2 -jobs $3
