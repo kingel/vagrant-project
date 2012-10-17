@@ -4,3 +4,5 @@
 /.tmp
 /Puppetfile.lock
 /.librarian
+CMakeCache.txt
+build.properties
